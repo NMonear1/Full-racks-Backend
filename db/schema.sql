@@ -7,10 +7,14 @@ CREATE TABLE users (
   id serial PRIMARY KEY,
   firstname text NOT NULL,
   lastname text NOT NULL,
+  birthday date NOT NULL,
   email text NOT NULL UNIQUE,
   username text NOT NULL UNIQUE,
   password text NOT NULL,
-  phonenumber text NOT NULL
+  phonenumber text NOT NULL,
+  SSN text NOT NULL UNIQUE,
+  citizenship BOOLEAN DEFAULT FALSE,
+  creditscore INT DEFAULT 0
 );
 
 CREATE TABLE accounts (
