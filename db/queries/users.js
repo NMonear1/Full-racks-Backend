@@ -66,3 +66,14 @@ export async function getUserById(id) {
   } = await db.query(sql, [id]);
   return user;
 }
+
+export async function getMe (id) { 
+  const sql = `
+  SELECT *
+  FROM transactions
+  where id = $1
+  `;
+  const { rows: transactions } = await db.query(sql, [id]); 
+  return transactions;
+}
+

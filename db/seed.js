@@ -1,5 +1,7 @@
 import db from "#db/client";
 import { createUser } from "#db/queries/users";
+import { createTransaction } from "#db/queries/transactions";
+
 // import { createAccount } from "#db/queries/accounts";
 // import { createTransaction } from "#db/queries/transactions";
 // import { createTransfer } from "#db/queries/transfers";
@@ -34,7 +36,28 @@ async function seed() {
       citizenship,
       creditscore,
     });
+
+    //need to modify how we find an accountNumber so we have a bett
+    for (let j = 0; j < 10; j++) {
+      const accountId = faker.finance.accountNumber();
+      const amount = faker.number.int({ min: 10, max: 200 });
+      const type = Math.random() < 0.5 ? 'checking' : 'saving';
+      const description = faker.finance.transactionDescription();
+      console.log("seeding transaction:");
+      console.log(accountId, amount, type, description);
+      await createTransaction({
+        account_id: accountId,
+        amount: amount,
+        type: type,
+        description: description,
+      });
+    }
   }
+}
+
+
+
+
   // for (let i = 1; i <= 5; i++) {
   //   await createAccount({ userId: i, type: "checking", balance: 1000 });
   //   await createAccount({ userId: i, type: "savings", balance: 5000 });
@@ -48,4 +71,4 @@ async function seed() {
   //   const toAccountId = i === 5 ? 1 : i + 1;
   //   await createTransfer({ fromAccountId, toAccountId, amount: 25 });
   // }
-}
+
