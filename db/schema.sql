@@ -30,7 +30,7 @@ CREATE TABLE transactions (
   id SERIAL PRIMARY KEY,
   account_id INT NOT NULL, -- REFERENCES accounts(id) ON DELETE CASCADE,
   amount NUMERIC(12,2) NOT NULL, 
-  type TEXT NOT NULL,               
+  transaction_type TEXT NOT NULL,               
   description TEXT,
   created_at TIMESTAMP DEFAULT now()
 );
