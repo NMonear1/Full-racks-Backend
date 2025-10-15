@@ -13,6 +13,7 @@ import { faker } from "@faker-js/faker";
 
 
 const account_numbers = []
+const account_ids = []
 
 
 await db.connect();
@@ -62,6 +63,7 @@ async function seed() {
     //create an account for the user
     const account_number = faker.finance.accountNumber();
     account_numbers.push(account_number);
+    account_ids.push(i+1); 
     const type = Math.random() < 0.5 ? "checking" : "saving";
     const balance = faker.number.int({ min: 1000, max: 5000 });
     const created_at = faker.date.past({ years: 1 });
@@ -98,9 +100,11 @@ async function seed() {
     const transferAmount = faker.number.int({ min: 10, max: 100 });
     console.log("seeding transfer:");
     console.log(originAccount, destinationAccount, transferAmount);
+    const from_account_number = Math.floor(Math.random() * 10) + 1
+    const to_account_number = Math.floor(Math.random() * 10) + 1
     const transfer = await createTransfers({
-      from_account_id: account_numbers[originAccount],
-      to_account_id: account_numbers[destinationAccount],
+      from_account_id: account_ids[from_account_number],
+      to_account_id: account_ids[to_account_number],
       amount: transferAmount,
     });
     console.log("Transfer created:", transfer);

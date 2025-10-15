@@ -19,7 +19,7 @@ CREATE TABLE users (
 
 CREATE TABLE accounts (
   id SERIAL PRIMARY KEY,
-  user_id INT NOT NULL, -- REFERENCES -- users(id) ON DELETE CASCADE,
+  user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   type TEXT NOT NULL, 
   account_number TEXT UNIQUE NOT NULL,
   balance NUMERIC(12,2) DEFAULT 0.00,
@@ -28,7 +28,7 @@ CREATE TABLE accounts (
 
 CREATE TABLE transactions (
   id SERIAL PRIMARY KEY,
-  account_id INT NOT NULL, -- REFERENCES accounts(id) ON DELETE CASCADE,
+  account_id INT NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
   amount NUMERIC(12,2) NOT NULL, 
   transaction_type TEXT NOT NULL,               
   description TEXT,
@@ -37,8 +37,8 @@ CREATE TABLE transactions (
 
 CREATE TABLE transfers (
   id SERIAL PRIMARY KEY,
-  from_account_id INT, -- REFERENCES accounts(id),
-  to_account_id INT, -- REFERENCES accounts(id),
+  from_account_id INT REFERENCES accounts(id),
+  to_account_id INT  REFERENCES accounts(id),
   amount NUMERIC(12,2) NOT NULL CHECK (amount > 0),
   created_at TIMESTAMP DEFAULT now()
 );
