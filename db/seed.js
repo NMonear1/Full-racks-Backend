@@ -5,6 +5,7 @@ import { createAccount } from "#db/queries/accounts";
 
 
 // import { createAccount } from "#db/queries/accounts";
+import { createAccount } from "#db/queries/accounts";
 // import { createTransaction } from "#db/queries/transactions";
 // import { createTransfer } from "#db/queries/transfers";
 import { faker } from "@faker-js/faker";
@@ -107,18 +108,28 @@ async function seed() {
 
     }
   }
-  
-
-// for (let i = 1; i <= 5; i++) {
-//   await createAccount({ userId: i, type: "checking", balance: 1000 });
-//   await createAccount({ userId: i, type: "savings", balance: 5000 });
-// }
-// for (let i = 1; i <= 5; i++) {
-//   await createTransaction({ accountId: i, type: "deposit", amount: 100 });
-//   await createTransaction({ accountId: i, type: "withdrawal", amount: 50 });
-// }
-// for (let i = 1; i <= 5; i++) {
-//   const fromAccountId = i;
-//   const toAccountId = i === 5 ? 1 : i + 1;
-//   await createTransfer({ fromAccountId, toAccountId, amount: 25 });
-// 
+ for (let i = 1; i <= 5; i++) {
+  await createAccount({
+    user_id: i,
+    type: "checking",
+    account_number: faker.finance.accountNumber(),
+    balance: 1000,
+    created_at: new Date()
+  });
+  await createAccount({
+    user_id: i,
+    type: "savings",
+    account_number: faker.finance.accountNumber(),
+    balance: 5000,
+    created_at: new Date()
+  });
+}
+//   for (let i = 1; i <= 5; i++) {
+//     await createTransaction({ accountId: i, type: "deposit", amount: 100 });
+//     await createTransaction({ accountId: i, type: "withdrawal", amount: 50 });
+//   }
+//   for (let i = 1; i <= 5; i++) {
+//     const fromAccountId = i;
+//     const toAccountId = i === 5 ? 1 : i + 1;
+//     await createTransfer({ fromAccountId, toAccountId, amount: 25 });
+  }
