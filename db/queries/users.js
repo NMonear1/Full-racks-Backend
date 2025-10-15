@@ -2,20 +2,20 @@ import db from "#db/client";
 import bcrypt from "bcrypt";
 
 export async function createUser({
-  username,
-  password,
-  email,
   firstname,
   lastname,
+  birthday,
+  email,
+  username,
+  password,
   phonenumber,
   SSN,
-  birthday,
   citizenship,
   creditscore,
 }) {
   const sql = `
   INSERT INTO users
-    (username, password, email, firstname, lastname, phonenumber, SSN, birthday, citizenship, creditscore)
+    (firstname, lastname, birthday, email, username, password, phonenumber, SSN, citizenship, creditscore)
   VALUES
     ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
   RETURNING *
@@ -24,14 +24,14 @@ export async function createUser({
   const {
     rows: [user],
   } = await db.query(sql, [
+    firstname, 
+    lastname,
+    birthday,
+    email,
     username,
     hashedPassword,
-    email,
-    firstname,
-    lastname,
     phonenumber,
     SSN,
-    birthday,
     citizenship,
     creditscore,
   ]);
@@ -66,3 +66,14 @@ export async function getUserById(id) {
   } = await db.query(sql, [id]);
   return user;
 }
+
+export async function getMe (id) { 
+  const sql = `
+  SELECT *
+  FROM transactions
+  where id = $1
+  `;
+  const { rows: transactions } = await db.query(sql, [id]); 
+  return transactions;
+}
+
