@@ -5,7 +5,7 @@ import { createAccount } from "#db/queries/accounts";
 
 
 // import { createAccount } from "#db/queries/accounts";
-import { createAccount } from "#db/queries/accounts";
+//import { createAccount } from "#db/queries/accounts";
 // import { createTransaction } from "#db/queries/transactions";
 // import { createTransfer } from "#db/queries/transfers";
 import { faker } from "@faker-js/faker";
@@ -58,9 +58,8 @@ async function seed() {
       citizenship,
       creditscore,
     });
-
+    
     //create an account for the user
-
     const account_number = faker.finance.accountNumber();
     account_numbers.push(account_number);
     const type = Math.random() < 0.5 ? "checking" : "saving";
@@ -69,67 +68,59 @@ async function seed() {
     console.log("seeding account:");
     console.log(user.id, type, account_number, balance, created_at);
     const account = await createAccount({
-       user_id: user.id,
-       type: type,
-       account_number: account_number,
-       balance: balance,
-       created_at: created_at,
-      });
-
+      user_id: user.id,
+      type: type,
+      account_number: account_number,
+      balance: balance,
+      created_at: created_at,
+    });
+    
     const accountId = account.id;
     const amount = faker.number.int({ min: 10, max: 200 });
     const transaction_type = Math.random() < 0.5 ? "deposit" : "withdrawal";
     const description = faker.finance.transactionDescription();
     console.log("seeding transaction:");
-      
     console.log(accountId, amount, type, description);
-      //create the transaction
+    
+    //create the transaction
     const transaction = await createTransaction({
-          account_id: accountId,
-          amount: amount,
-          transaction_type: transaction_type,
-          description: description, 
-      });
-    }
-
-    //create the transfers
-    for (let j = 0; j < 10; j++) {
+      account_id: accountId,
+      amount: amount,
+      transaction_type: transaction_type,
+      description: description,
+    });
+  }
+  
+  //create the transfers
+  for (let j = 0; j < 10; j++) {
     const originAccount = Math.floor(Math.random() * account_numbers.length);
     const destinationAccount = Math.floor(Math.random() * account_numbers.length);
     const transferAmount = faker.number.int({ min: 10, max: 100 });
     console.log("seeding transfer:");
     console.log(originAccount, destinationAccount, transferAmount);
-      const transfer = await createTransfers({
-          from_account_id: account_numbers[originAccount],
-          to_account_id: account_numbers[destinationAccount],
-          amount: transferAmount,
-      });
-      console.log("Transfer created:", transfer);
-
-    }
+    const transfer = await createTransfers({
+      from_account_id: account_numbers[originAccount],
+      to_account_id: account_numbers[destinationAccount],
+      amount: transferAmount,
+    });
+    console.log("Transfer created:", transfer);
   }
- for (let i = 1; i <= 5; i++) {
-  await createAccount({
-    user_id: i,
-    type: "checking",
-    account_number: faker.finance.accountNumber(),
-    balance: 1000,
-    created_at: new Date()
-  });
-  await createAccount({
-    user_id: i,
-    type: "savings",
-    account_number: faker.finance.accountNumber(),
-    balance: 5000,
-    created_at: new Date()
-  });
-}
-//   for (let i = 1; i <= 5; i++) {
-//     await createTransaction({ accountId: i, type: "deposit", amount: 100 });
-//     await createTransaction({ accountId: i, type: "withdrawal", amount: 50 });
-//   }
-//   for (let i = 1; i <= 5; i++) {
-//     const fromAccountId = i;
-//     const toAccountId = i === 5 ? 1 : i + 1;
-//     await createTransfer({ fromAccountId, toAccountId, amount: 25 });
+  
+  // MOVE THIS INSIDE - before the closing brace of seed()
+  for (let i = 1; i <= 5; i++) {
+    await createAccount({
+      user_id: i,
+      type: "checking",
+      account_number: faker.finance.accountNumber(),
+      balance: 1000,
+      created_at: new Date()
+    });
+    await createAccount({
+      user_id: i,
+      type: "savings",
+      account_number: faker.finance.accountNumber(),
+      balance: 5000,
+      created_at: new Date()
+    });
   }
+} 
