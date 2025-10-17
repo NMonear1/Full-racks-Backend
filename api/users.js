@@ -1,8 +1,13 @@
 import express from "express";
 const router = express.Router();
 export default router;
+import { createAccount } from "#db/queries/accounts";
 
-import { createUser, getUserByUsernameAndPassword, getMe } from "#db/queries/users";
+import {
+  createUser,
+  getUserByUsernameAndPassword,
+  getMe,
+} from "#db/queries/users";
 import getUserFromToken from "../middleware/getUserFromToken.js";
 
 import requireBody from "#middleware/requireBody";
@@ -22,6 +27,7 @@ router
       "creditscore",
       "username",
       "password",
+      "accountType",
     ]),
     async (req, res) => {
       try {
@@ -36,9 +42,10 @@ router
           SSN,
           citizenship,
           creditscore,
+          accountType,
         } = req.body;
         const user = await createUser({
-          firstname: firstname, 
+          firstname: firstname,
           lastname: lastname,
           birthday: birthday,
           email: email,
@@ -49,6 +56,16 @@ router
           citizenship: citizenship,
           creditscore: creditscore,
         });
+
+        const account_number = Math.random().toString(36).substring(2, 15);
+        await createAccount({
+          user_id: user.id,
+          type: accountType,
+          account_number: account_number,
+          balance: 0.0,
+          created_at: new Date(),
+        });
+
         const token = await createToken({ id: user.id });
         res.status(201).send(token);
       } catch (error) {
@@ -73,15 +90,15 @@ router
     }
   });
 
-router.route('/me').get(getUserFromToken, async (req, res) => {
-    try {
-      const id = req.user.id;
-      console.log("User ID:", id);
-      const response = await getMe(id);
-      console.log("response:", response);
-      res.status(200).json(response);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-      res.status(400).send(error);
-    }
-  });
+router.route("/me").get(getUserFromToken, async (req, res) => {
+  try {
+    const id = req.user.id;
+    console.log("User ID:", id);
+    const response = await getMe(id);
+    console.log("response:", response);
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    res.status(400).send(error);
+  }
+});
