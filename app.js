@@ -1,6 +1,9 @@
 import express from "express";
 import usersRouter from "#api/users";
 import transactionsRouter from "#api/transactions";
+import checkingRouter from "#api/checking";
+import savingRouter from "#api/saving";
+import creditRouter from "#api/saving";
 import getUserFromToken from "#middleware/getUserFromToken";
 import handlePostgresErrors from "#middleware/handlePostgresErrors";
 import cors from "cors";
@@ -20,6 +23,9 @@ app.use(getUserFromToken);
 app.get("/", (req, res) => res.send("Hello, World!"));
 app.use("/users", usersRouter);
 app.use("/transactions", transactionsRouter);
+app.use("/checking", checkingRouter);
+app.use("/saving", savingRouter);
+app.use("/credit", creditRouter);
 
 
 
