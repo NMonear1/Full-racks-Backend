@@ -3,14 +3,7 @@ import { createUser } from "#db/queries/users";
 import { createTransaction, createTransfers } from "#db/queries/transactions";
 import { createAccount } from "#db/queries/accounts";
 
-
-// import { createAccount } from "#db/queries/accounts";
-//import { createAccount } from "#db/queries/accounts";
-// import { createTransaction } from "#db/queries/transactions";
-// import { createTransfer } from "#db/queries/transfers";
 import { faker } from "@faker-js/faker";
-//import { a } from "vitest/dist/chunks/suite.d.FvehnV49.js";
-
 
 const account_numbers = []
 const account_ids = []
