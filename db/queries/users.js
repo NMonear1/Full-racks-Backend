@@ -70,10 +70,10 @@ export async function getUserById(id) {
 export async function getMe (id) { 
   const sql = `
   SELECT *
-  FROM transactions
-  where id = $1
+  FROM users
+  WHERE id = $1
   `;
-  const { rows: transactions } = await db.query(sql, [id]); 
-  return transactions;
+  const { rows: user } = await db.query(sql, [id]); 
+  return user;
 }
 

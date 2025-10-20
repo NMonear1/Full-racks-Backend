@@ -11,6 +11,7 @@ import {
 import getUserFromToken from "../middleware/getUserFromToken.js";
 
 import requireBody from "#middleware/requireBody";
+import requireUser from "#middleware/requireUser";
 import { createToken } from "#utils/jwt";
 
 router
@@ -58,10 +59,12 @@ router
         });
 
         const account_number = Math.random().toString(36).substring(2, 15);
+        const routing_number = Math.random().toString(36).substring(2, 15);
         await createAccount({
           user_id: user.id,
           type: accountType,
           account_number: account_number,
+          routing_number: routing_number,
           balance: 0.0,
           created_at: new Date(),
         });
@@ -90,7 +93,7 @@ router
     }
   });
 
-router.route("/me").get(getUserFromToken, async (req, res) => {
+router.route("/me").get(requireUser, async (req, res) => {
   try {
     const id = req.user.id;
     console.log("User ID:", id);

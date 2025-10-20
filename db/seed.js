@@ -55,6 +55,7 @@ async function seed() {
     
     //create an account for the user
     const account_number = faker.finance.accountNumber();
+    const routing_number = faker.finance.routingNumber();
     account_numbers.push(account_number);
     account_ids.push(i+1); 
     const type = Math.random() < 0.5 ? "checking" : "saving";
@@ -66,6 +67,7 @@ async function seed() {
       user_id: user.id,
       type: type,
       account_number: account_number,
+      routing_number: routing_number,
       balance: balance,
       created_at: created_at,
     });
@@ -109,6 +111,7 @@ async function seed() {
       user_id: i,
       type: "checking",
       account_number: faker.finance.accountNumber(),
+      routing_number: faker.finance.routingNumber(),
       balance: 1000,
       created_at: new Date()
     });
@@ -116,6 +119,7 @@ async function seed() {
       user_id: i,
       type: "savings",
       account_number: faker.finance.accountNumber(),
+      routing_number: faker.finance.routingNumber(),
       balance: 5000,
       created_at: new Date()
     });

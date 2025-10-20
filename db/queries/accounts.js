@@ -1,16 +1,16 @@
 import db from "#db/client";
 
-export async function createAccount({user_id, type, account_number, balance, created_at}) {
+export async function createAccount({user_id, type, account_number, routing_number, balance, created_at}) {
     const sql = `
     INSERT INTO accounts
-        (user_id, type, account_number, balance, created_at)
+        (user_id, type, account_number, routing_number, balance, created_at)
         VALUES
-        ($1, $2, $3, $4, $5)
+        ($1, $2, $3, $4, $5, $6)
         RETURNING *
         `;
         const {
         rows: [account],
-        } = await db.query(sql, [user_id, type, account_number, balance, created_at]);
+        } = await db.query(sql, [user_id, type, account_number, routing_number, balance, created_at]);
         return account;
 }
 
