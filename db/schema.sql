@@ -22,6 +22,7 @@ CREATE TABLE accounts (
   user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   type TEXT NOT NULL, 
   account_number TEXT UNIQUE NOT NULL,
+  routing_number TEXT UNIQUE NOT NULL,
   balance NUMERIC(12,2) DEFAULT 0.00,
   created_at TIMESTAMP DEFAULT now()
 );
