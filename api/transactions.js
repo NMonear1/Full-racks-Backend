@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 
-import { getTransactions, getMe } from "#db/queries/transactions";
+import { getTransactions, getMyTransactions } from "#db/queries/transactions";
 import { createToken, verifyToken } from "#utils/jwt";
 import requireBody from "#middleware/requireBody";
 import requireUser from "#middleware/requireUser";
@@ -12,7 +12,7 @@ router
   .get(requireUser, async (req, res) => {
     try {
       console.log("GET /transactions");
-      const transactions = await getTransactions();
+      const transactions = await getMyTransactions(req.user.id);
       res.send(transactions);
     } catch (error) {
       console.error(error);

@@ -38,10 +38,11 @@ export async function getTransactions () {
 }
 
 
-export async function getMe (id) { 
+export async function getMyTransactions (id) { 
     const sql = `
     SELECT *
     FROM transactions
+    where id = $1
     `;
     const { rows: transactions } = await db.query(sql, [id]); 
     return transactions;
