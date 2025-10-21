@@ -24,7 +24,7 @@ export async function createUser({
   const {
     rows: [user],
   } = await db.query(sql, [
-    firstname, 
+    firstname,
     lastname,
     birthday,
     email,
@@ -67,13 +67,13 @@ export async function getUserById(id) {
   return user;
 }
 
-export async function getMe (id) { 
+export async function getMe(userId) {
   const sql = `
   SELECT *
   FROM users
-  WHERE id = $1
+  where id = $1
   `;
-  const { rows: user } = await db.query(sql, [id]); 
+  const { rows: [user] } = await db.query(sql, [userId]);
   return user;
 }
-
+ 
