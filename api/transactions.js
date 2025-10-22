@@ -2,7 +2,6 @@ import express from "express";
 const router = express.Router();
 
 import { getTransactions, getMyTransactions } from "#db/queries/transactions";
-import { createToken, verifyToken } from "#utils/jwt";
 import requireBody from "#middleware/requireBody";
 import requireUser from "#middleware/requireUser";
 

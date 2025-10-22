@@ -40,9 +40,10 @@ export async function getTransactions () {
 
 export async function getMyTransactions (id) { 
     const sql = `
-    SELECT *
-    FROM transactions
-    where id = $1
+    SELECT t.*
+    FROM transactions t
+    JOIN accounts a ON t.account_id = a.id
+    WHERE a.user_id = $1;
     `;
     const { rows: transactions } = await db.query(sql, [id]); 
     return transactions;
