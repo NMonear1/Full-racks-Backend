@@ -3,8 +3,9 @@ const router = express.Router();
 
 import { getAccount, createAccount, getUserAccounts } from "#db/queries/accounts";
 import requireUser from "#middleware/requireUser";
+import requireBody from "#middleware/requireBody";
 
-//get account from the token
+
 router.route("/").get(requireUser, async (req, res) => {
   try {
     console.log("GET /account");
