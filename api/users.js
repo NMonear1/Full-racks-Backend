@@ -45,34 +45,47 @@ router
           creditscore,
           accountType,
         } = req.body;
+
+        console.log("Incoming registration:", req.body);
+
         const user = await createUser({
-          firstname: firstname,
-          lastname: lastname,
-          birthday: birthday,
-          email: email,
-          username: username,
-          password: password,
-          phonenumber: phonenumber,
-          SSN: SSN,
-          citizenship: citizenship,
-          creditscore: creditscore,
+          firstname,
+          lastname,
+          birthday,
+          email,
+          username,
+          password,
+          phonenumber,
+          SSN,
+          citizenship,
+          creditscore,
         });
 
-        const account_number = Math.random().toString(36).substring(2, 15);
-        const routing_number = Math.random().toString(36).substring(2, 15);
-        await createAccount({
+        console.log("User created:", user);
+        console.log("Creating account with type:", accountType);
+
+        const account_number = Math.floor(
+          1000000000 + Math.random() * 9000000000
+        ).toString();
+        const routing_number = Math.floor(
+          100000000 + Math.random() * 900000000
+        ).toString();
+
+        const newAccount = await createAccount({
           user_id: user.id,
           type: accountType,
-          account_number: account_number,
-          routing_number: routing_number,
+          account_number,
+          routing_number,
           balance: 0.0,
           created_at: new Date(),
         });
 
+        console.log("Account created:", newAccount);
+
         const token = await createToken({ id: user.id });
         res.status(201).send(token);
       } catch (error) {
-        console.error(error);
+        console.error("Registration failed:", error.stack);
         res.status(500).send({ error: error.message });
       }
     }
