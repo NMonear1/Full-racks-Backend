@@ -1,13 +1,13 @@
 import db from "#db/client";
 
 
-export async function getChecking(id) {
+export async function getChecking(userId) {
     const sql = `
     SELECT *
     FROM accounts
-    WHERE id = $1 AND type = 'checking'
+    WHERE user_id = $1 AND type = 'checking'
     `;
-    const { rows: [account] } = await db.query(sql, [id]);
+    const { rows: [account] } = await db.query(sql, [userId]);
     if (!account) {
         throw new Error('No Checking Account found');
     }
