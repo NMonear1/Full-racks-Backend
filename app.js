@@ -21,8 +21,8 @@ app.get("/", (req, res) => res.send("Hello, World!"));
 app.use("/users", usersRouter);
 app.use("/transactions", transactionsRouter);
 app.use("/account", accountsRouter);
-// app.use("/saving", savingRouter);
-// app.use("/checking", checkingRouter);
+app.use("/saving", savingRouter);
+app.use("/checking", checkingRouter);
 // app.use("/credit", creditRouter);
 
 app.use(handlePostgresErrors);

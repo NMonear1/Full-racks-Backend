@@ -1,81 +1,86 @@
 import express from "express";
 const router = express.Router();
-import { getAccount, createAccount, getUserAccounts } from "#db/queries/accounts";
+import {
+  getAccount,
+  createAccount,
+  getUserAccounts,
+  deleteAccount,
+} from "#db/queries/accounts";
 import requireUser from "#middleware/requireUser";
-import requireBody from "#middleware/requireBody";
-import { getChecking } from "#db/queries/checking";
-import { getSaving } from "#db/queries/saving";
 
-router.route("/").get(requireUser, async (req, res) => {
+router.get("/", requireUser, async (req, res) => {
   try {
-    console.log("GET /account");
     const accounts = await getUserAccounts(req.user.id);
     res.send(accounts);
   } catch (error) {
     console.error(error);
     res.status(500).send({ error: error.message });
   }
-}).post(requireBody(["user_id", "type", "account_number", "routing_number", "balance"]), async (req, res) => {
+});
+
+router.post("/open", requireUser, async (req, res) => {
   try {
-    console.log("POST /account");
-    const { user_id, type, account_number, routing_number, balance, created_at } = req.body;
-    await createAccount({
-      user_id,
-      type,
+    const { accountType } = req.body;
+    const userId = req.user.id;
+
+    const account_number = Math.floor(
+      1000000000 + Math.random() * 9000000000
+    ).toString();
+
+    const routing_number = Math.floor(
+      100000000 + Math.random() * 900000000
+    ).toString();
+
+    const newAccount = await createAccount({
+      user_id: userId,
+      type: accountType,
       account_number,
       routing_number,
-      balance,
-      created_at
+      balance: 0.0,
+      created_at: new Date(),
     });
-    res.status(201).send({ message: "Account created successfully" });
+
+    res.status(201).json(newAccount);
   } catch (error) {
-    console.error(error);
+    console.error("Error opening account:", error);
     res.status(500).send({ error: error.message });
   }
 });
 
-// Specific routes BEFORE dynamic routes
 router
-  .route("/checking")
+  .route("/:id")
   .get(requireUser, async (req, res) => {
     try {
-      console.log("GET /checking");
-      console.log(req.user.id)
-      const account = await getChecking(req.user.id);
-      console.log(account)
-      res.send(account);
-    }
-    catch (error) {
-      console.error(error);
-      res.status(500).send({ error: error.message });
-    }
-  })
+      const accountId = req.params.id;
+      const userId = req.user.id;
+      const account = await getAccount(accountId);
 
-router
-  .route("/saving")
-  .get(requireUser, async (req, res) => {
-    try {
-      console.log("GET /saving");
-      console.log(req.user.id)
-      const account = await getSaving(req.user.id);
-      res.send(account);
+      if (!account || account.user_id !== userId) {
+        return res.status(403).send({ error: "Unauthorized" });
+      }
+
+      res.status(200).json(account);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching account:", error);
       res.status(500).send({ error: error.message });
     }
   })
+  .delete(requireUser, async (req, res) => {
+    try {
+      const accountId = req.params.id;
+      const userId = req.user.id;
+      const account = await getAccount(accountId);
 
-// Dynamic route LAST - acts as a catch-all
-router.route("/:type").get(requireUser, async (req, res) => { // Also added requireUser here!
-  try {
-    const { type } = req.params;
-    const accounts = await getUserAccounts(req.user.id);
-    const filteredAccount = accounts.filter((acc) => acc.type === type);
-    res.send(filteredAccount);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ error: error.message });
-  }
-});
+      if (!account || account.user_id !== userId) {
+        return res.status(403).send({ error: "Unauthorized" });
+      }
+
+      const deletedAccount = await deleteAccount(accountId);
+      res.status(200).json(deletedAccount);
+    } catch (error) {
+      console.error("Error closing account:", error);
+      res.status(500).send({ error: error.message });
+    }
+  });
 
 export default router;

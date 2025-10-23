@@ -101,3 +101,4 @@ export async function getUserAccounts(user_id) {
   const { rows: accounts } = await db.query(sql, [user_id]);
   return accounts;
 }
+
