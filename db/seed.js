@@ -1,9 +1,11 @@
 import db from "#db/client";
 import { createUser } from "#db/queries/users";
-import { createTransaction, createTransfers } from "#db/queries/transactions";
+import { createTransaction } from "#db/queries/transactions";
+import { createTransfers } from "#db/queries/transfers";
 import { createAccount } from "#db/queries/accounts";
 
 import { faker } from "@faker-js/faker";
+import { v4 as uuidv4 } from 'uuid';
 
 const account_numbers = []
 const account_ids = []
@@ -106,22 +108,23 @@ async function seed() {
   }
   
   // MOVE THIS INSIDE - before the closing brace of seed()
-  for (let i = 1; i <= 5; i++) {
-    await createAccount({
-      user_id: i,
-      type: "checking",
-      account_number: faker.finance.accountNumber(),
-      routing_number: faker.finance.routingNumber(),
-      balance: 1000,
-      created_at: new Date()
-    });
-    await createAccount({
-      user_id: i,
-      type: "savings",
-      account_number: faker.finance.accountNumber(),
-      routing_number: faker.finance.routingNumber(),
-      balance: 5000,
-      created_at: new Date()
-    });
-  }
+//   for (let i = 1; i <= 5; i++) {
+//     const newId = uuidv4()
+//     await createAccount({
+//       user_id: newId,
+//       type: "checking",
+//       account_number: faker.finance.accountNumber(),
+//       routing_number: faker.finance.routingNumber(),
+//       balance: 1000,
+//       created_at: new Date()
+//     });
+//     await createAccount({
+//       user_id: newId,
+//       type: "savings",
+//       account_number: faker.finance.accountNumber(),
+//       routing_number: faker.finance.routingNumber(),
+//       balance: 5000,
+//       created_at: new Date()
+//     });
+  // }
 } 

@@ -5,6 +5,8 @@ import {
   createAccount,
   getUserAccounts,
   deleteAccount,
+  deposit,
+  withdraw
 } from "#db/queries/accounts";
 import requireUser from "#middleware/requireUser";
 
@@ -62,6 +64,24 @@ router
       res.status(200).json(account);
     } catch (error) {
       console.error("Error fetching account:", error);
+      res.status(500).send({ error: error.message });
+    }
+  })
+  .put(requireUser, async (req, res) => {
+    try {
+      const accountId = req.params.id;
+      const userId = req.user.id;
+      const { balance } = req.body;
+      const account = await deposit(accountId, balance);
+
+      if (!account || account.user_id !== userId) {
+        return res.status(403).send({ error: "Unauthorized" });
+      }
+
+      // Implement update logic here (e.g., updating account details)
+      res.status(200).json({ message: "Account updated successfully" });
+    } catch (error) {
+      console.error("Error updating account:", error);
       res.status(500).send({ error: error.message });
     }
   })

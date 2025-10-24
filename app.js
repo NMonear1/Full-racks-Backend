@@ -1,6 +1,7 @@
 import express from "express";
 import usersRouter from "#api/users";
 import transactionsRouter from "#api/transactions";
+import transfersRouter from "#api/transfers";
 import accountsRouter from "#api/accounts";
 import savingRouter from "#api/saving";
 import checkingRouter from "#api/checking";
@@ -23,6 +24,8 @@ app.use("/transactions", transactionsRouter);
 app.use("/account", accountsRouter);
 app.use("/saving", savingRouter);
 app.use("/checking", checkingRouter);
+app.use("/transfers", transfersRouter);
+
 // app.use("/credit", creditRouter);
 
 app.use(handlePostgresErrors);

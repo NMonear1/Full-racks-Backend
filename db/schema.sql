@@ -3,8 +3,11 @@ DROP TABLE IF EXISTS transactions CASCADE;
 DROP TABLE IF EXISTS accounts CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+
 CREATE TABLE users (
-  id serial PRIMARY KEY,
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   firstname text NOT NULL,
   lastname text NOT NULL,
   birthday date NOT NULL,
@@ -19,7 +22,7 @@ CREATE TABLE users (
 
 CREATE TABLE accounts (
   id SERIAL PRIMARY KEY,
-  user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   type TEXT NOT NULL, 
   account_number TEXT UNIQUE NOT NULL,
   routing_number TEXT UNIQUE NOT NULL,
@@ -49,7 +52,7 @@ CREATE TABLE transfers (
 
 -- CREATE TABLE sessions (
 --   id SERIAL PRIMARY KEY,
---   user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+--   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 --   token TEXT NOT NULL UNIQUE,
 --   created_at TIMESTAMP DEFAULT now(),
 --   expires_at TIMESTAMP NOT NULL
