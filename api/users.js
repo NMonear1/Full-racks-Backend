@@ -2,6 +2,7 @@ import express from "express";
 const router = express.Router();
 export default router;
 import { createAccount } from "#db/queries/accounts";
+import db from "../db/client.js";
 
 import {
   createUser,
@@ -116,5 +117,32 @@ router.route("/me").get(requireUser, async (req, res) => {
   } catch (error) {
     console.error("Error fetching user data:", error);
     res.status(400).send(error);
+  }
+});
+
+router.patch('/credit-score', requireUser, async (req, res) => {
+  try {
+    const { creditscore } = req.body;
+    
+    if (!creditscore || creditscore < 300 || creditscore > 850) {
+      return res.status(400).json({ error: 'Credit score must be between 300 and 850' });
+    }
+    
+    const result = await db.query(
+      'UPDATE users SET creditscore = $1 WHERE id = $2 RETURNING id, firstname, lastname, email, creditscore',
+      [creditscore, req.user.id]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    res.json({ 
+      message: 'Credit score updated successfully', 
+      user: result.rows[0] 
+    });
+  } catch (error) {
+    console.error('Error updating credit score:', error);
+    res.status(500).json({ error: 'Server error' });
   }
 });
