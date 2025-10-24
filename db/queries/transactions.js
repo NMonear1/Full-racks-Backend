@@ -19,23 +19,6 @@ export async function createTransaction({
   return transaction;
 }
 
-export async function createTransfers({
-  from_account_id,
-  to_account_id,
-  amount,
-}) {
-  const sql = `
-    INSERT INTO transfers
-        (from_account_id, to_account_id, amount)
-        VALUES
-        ($1, $2, $3)
-        RETURNING *
-        `;
-  const {
-    rows: [transaction],
-  } = await db.query(sql, [from_account_id, to_account_id, amount]);
-  return transaction;
-}
 
 export async function getTransactions() {
   const sql = `
@@ -55,4 +38,15 @@ export async function getMyTransactions(id) {
     `;
   const { rows: transactions } = await db.query(sql, [id]);
   return transactions;
+}
+
+export async function getTransactionSummary(id) {
+    const sql = `
+      SELECT sum(t.amount) as total_amount
+      FROM transactions t
+      JOIN accounts a ON t.account_id = a.id
+      WHERE a.user_id = $1;
+      `;
+    const { rows: [transaction] } = await db.query(sql, [id]);
+    return transaction;
 }

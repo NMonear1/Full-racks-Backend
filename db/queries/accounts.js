@@ -49,6 +49,32 @@ export async function getAccount(id) {
   return account;
 }
 
+export async function deposit(accountId, newBalance) {
+  const sql = `
+    UPDATE accounts SET
+        balance = balance + $2
+    WHERE id = $1
+    RETURNING *;
+    `;
+  const {
+    rows: [account],
+  } = await db.query(sql, [accountId, newBalance]);
+  return account;
+}
+
+export async function withdraw(accountId, newBalance) {
+  const sql = `
+    UPDATE accounts SET
+        balance = balance - $2
+    WHERE id = $1
+    RETURNING *;
+    `;
+  const {
+    rows: [account],
+  } = await db.query(sql, [accountId, newBalance]);
+  return account;
+}
+
 export async function updateAccount({
   id,
   user_id,

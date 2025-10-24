@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 
-import { getTransactions, getMyTransactions } from "#db/queries/transactions";
+import { getTransactions, getMyTransactions, getTransactionSummary } from "#db/queries/transactions";
 import requireBody from "#middleware/requireBody";
 import requireUser from "#middleware/requireUser";
 
@@ -12,6 +12,19 @@ router
     try {
       console.log("GET /transactions");
       const transactions = await getMyTransactions(req.user.id);
+      res.send(transactions);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ error: error.message });
+    }
+  })
+
+  router
+  .route("/balance")
+  .get(requireUser, async (req, res) => {
+    try {
+      console.log("GET /balance");
+      const transactions = await getTransactionSummary(req.user.id);
       res.send(transactions);
     } catch (error) {
       console.error(error);
