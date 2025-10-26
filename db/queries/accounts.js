@@ -36,12 +36,9 @@ export async function deleteAccount(accountId) {
 }
 
 export async function deposit(accountId, amount) {
-  // Get a NEW client from the pool
   const client = await db.connect();
   try {
     await client.query("BEGIN");
-
-    // Update account balance
     const accountResult = await client.query(
       "UPDATE accounts SET balance = balance + $1 WHERE id = $2 RETURNING *",
       [amount, accountId]
