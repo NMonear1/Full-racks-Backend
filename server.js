@@ -12,7 +12,7 @@ app.listen(PORT, () => {
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://690167577dd073e0d42377cd--fullracksbanks.netlify.app",
     credentials: true,
   })
 );
