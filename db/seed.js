@@ -3,6 +3,7 @@ import { createUser } from "#db/queries/users";
 import { createTransaction } from "#db/queries/transactions";
 import { createTransfers } from "#db/queries/transfers";
 import { createAccount } from "#db/queries/accounts";
+import { openCreditCard } from "../db/queries/credit_cards.js";
 
 import { faker } from "@faker-js/faker";
 import { v4 as uuidv4 } from 'uuid';
@@ -88,7 +89,38 @@ async function seed() {
       transaction_type: transaction_type,
       description: description,
     });
+
+      //create credit cards for each user
+    const card_number = faker.finance.creditCardNumber();
+    const card_type = faker.helpers.arrayElement(['Visa', 'Mastercard', 'American Express', 'Discover']);
+    const expiration_date = faker.date.future({ years: 5 });
+    const cvv = faker.finance.creditCardCVV();
+    const credit_limit = faker.number.int({ min: 1000, max: 10000 });
+    const current_balance = faker.number.int({ min: 0, max: credit_limit * 0.8 }); // Max 80% of limit
+    const interest_rate = faker.number.float({ min: 15.99, max: 29.99, fractionDigits: 2 });
+    const minimum_payment = Math.max(25, current_balance * 0.02); // 2% of balance or $25 minimum
+    const payment_due_date = faker.date.future({ days: 30 });
+
+    console.log("seeding credit card:");
+    console.log(user.id, card_type, card_number, credit_limit, current_balance);
+
+    const creditCard = await openCreditCard({
+      user_id: user.id,
+      card_number: card_number,
+      card_type: card_type,
+      expiration_date: expiration_date,
+      cvv: cvv,
+      credit_limit: credit_limit,
+      current_balance: current_balance,
+      interest_rate: interest_rate,
+      minimum_payment: minimum_payment,
+      payment_due_date: payment_due_date,
+      status: 'active'
+    });
+
+    console.log("Credit card created:", creditCard.id);
   }
+
   
   //create the transfers
   for (let j = 0; j < 10; j++) {
@@ -106,6 +138,7 @@ async function seed() {
     });
     console.log("Transfer created:", transfer);
   }
+}
   
   // MOVE THIS INSIDE - before the closing brace of seed()
 //   for (let i = 1; i <= 5; i++) {
@@ -127,4 +160,3 @@ async function seed() {
 //       created_at: new Date()
 //     });
   // }
-} 

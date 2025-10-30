@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS credit_cards CASCADE;
 DROP TABLE IF EXISTS transfers CASCADE;
 DROP TABLE IF EXISTS transactions CASCADE;
 DROP TABLE IF EXISTS accounts CASCADE;
@@ -30,13 +31,45 @@ CREATE TABLE accounts (
   created_at TIMESTAMP DEFAULT now()
 );
 
+CREATE TABLE credit_cards (
+  id SERIAL PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  card_number TEXT UNIQUE NOT NULL,
+  card_type TEXT NOT NULL,
+  expiration_date DATE NOT NULL,
+  cvv TEXT NOT NULL,
+  credit_limit NUMERIC(12,2) NOT NULL DEFAULT 1000.00,
+  current_balance NUMERIC(12,2) DEFAULT 0.00,
+  available_credit NUMERIC(12,2) GENERATED ALWAYS AS (credit_limit - current_balance) STORED,
+  interest_rate NUMERIC(5,2) DEFAULT 19.99,
+  minimum_payment NUMERIC(12,2) DEFAULT 25.00,
+  payment_due_date DATE,
+  status TEXT DEFAULT 'active',
+  created_at TIMESTAMP DEFAULT now(),
+  CONSTRAINT valid_card_type CHECK (card_type IN ('Visa', 'Mastercard', 'American Express', 'Discover')),
+  CONSTRAINT valid_status CHECK (status IN ('active', 'suspended', 'closed')),
+  CONSTRAINT positive_credit_limit CHECK (credit_limit > 0),
+  CONSTRAINT balance_not_exceed_limit CHECK (current_balance <= credit_limit)
+);
 CREATE TABLE transactions (
   id SERIAL PRIMARY KEY,
-  account_id INT NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+  account_id INT REFERENCES accounts(id) ON DELETE CASCADE,
+  credit_card_id INT REFERENCES credit_cards(id) ON DELETE CASCADE,
   amount NUMERIC(12,2) NOT NULL, 
-  transaction_type TEXT NOT NULL,               
+  transaction_type TEXT NOT NULL CHECK (transaction_type IN (
+    'deposit', 'withdrawal', 'transfer_in', 'transfer_out',  -- Bank account types
+    'purchase', 'payment', 'cash_advance', 'fee', 'interest', 'refund'  -- Credit card types
+  )),               
   description TEXT,
-  created_at TIMESTAMP DEFAULT now()
+  merchant TEXT,  -- For credit card purchases
+  category TEXT,  -- For categorizing transactions
+  created_at TIMESTAMP DEFAULT now(),
+  
+  -- Ensure transaction belongs to either account OR credit card, not both
+  CONSTRAINT check_account_or_card CHECK (
+    (account_id IS NOT NULL AND credit_card_id IS NULL) OR 
+    (account_id IS NULL AND credit_card_id IS NOT NULL)
+  )
 );
 
 CREATE TABLE transfers (
@@ -47,6 +80,7 @@ CREATE TABLE transfers (
   created_at TIMESTAMP DEFAULT now()
 );
  
+
 
  -- fun idea for session management if needed later
 
