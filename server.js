@@ -12,7 +12,7 @@ app.listen(PORT, () => {
 
 app.use(
   cors({
-    origin: "https://full-racks-bank.onrender.com/",
+    origin: "https://full-racks-bank.onrender.com",
     credentials: true,
   })
 );
