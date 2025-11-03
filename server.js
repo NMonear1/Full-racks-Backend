@@ -12,7 +12,7 @@ app.listen(PORT, () => {
 
 app.use(
   cors({
-    origin: "https://690167577dd073e0d42377cd--fullracksbanks.netlify.app",
+    origin: "https://full-racks-bank.onrender.com",
     credentials: true,
   })
 );
