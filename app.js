@@ -6,6 +6,7 @@ import accountsRouter from "#api/accounts";
 import savingRouter from "#api/saving";
 import checkingRouter from "#api/checking";
 import creditRouter from "#api/credit_cards";
+import stockRouter from "#api/stocks";
 import getUserFromToken from "#middleware/getUserFromToken";
 import handlePostgresErrors from "#middleware/handlePostgresErrors";
 import cors from "cors";
@@ -27,6 +28,7 @@ app.use("/saving", savingRouter);
 app.use("/checking", checkingRouter);
 app.use("/credit_cards", creditRouter);
 app.use("/transfers", transfersRouter);
+app.use("/stocks", stockRouter);
 
 // app.use("/credit", creditRouter);
 
